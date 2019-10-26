@@ -24,28 +24,43 @@ export default {
       'esri/views/MapView',
       "esri/layers/FeatureLayer",
       "esri/widgets/Editor",
-      "esri/widgets/TimeSlider"
+      "esri/widgets/TimeSlider",
+      "esri/views/layers/support/FeatureFilter",
+      "esri/widgets/LayerList"
        ], { css: true })
-    .then(([ArcGISMap, MapView, FeatureLayer, Editor, TimeSlider]) => {    
+    .then(([ArcGISMap, MapView, FeatureLayer, Editor, TimeSlider, FeatureFilter, LayerList]) => {    
       const map = new ArcGISMap({
         basemap: 'topo-vector',
       });
 
        var featureLayer = new FeatureLayer({
          url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/wikimaps/FeatureServer/0",
-        //  popupEnabled: false,
-        //  popupTemplate: {
-        //    title: "Details",
-        //    content: "This is the content of the region"
-        //  }
-        outFields: ["startYear", "endYear", "wikiLink", "EmpireName", "Information"]
+         popupEnabled: true,
+         popupTemplate: {
+           title: "Details",
+           content: "This is the content of the region"
+         }
+          outFields: ["startYear", "endYear", "wikiLink", "EmpireName", "Information"]
+
+       });
+
+       var rlgLayer = new FeatureLayer({
+         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/religionlayer/FeatureServer",
+         popupTemplate: {
+           title: "Details",
+           content: "This is the content of the region"
+         }
        });
       
       var layer = featureLayer;
+
+      var layerArr = new Array();
+      layerArr.push(featureLayer);
+      layerArr.push(rlgLayer);
        
      
-      map.add(featureLayer);
-      //  map.add(graphicsLayer);
+       map.add(featureLayer);
+       map.add(rlgLayer);
 
       this.view = new MapView({
         container: this.$el,
@@ -55,39 +70,48 @@ export default {
     
       });
 
+       var layerList = new LayerList({
+        view: this.view
+      })
+      
+      this.view.ui.add(layerList, "top-left");
       var editor = new Editor({
         view  : this.view
       });
 
       var timeSlider = new TimeSlider({
-        view: this.view,
-        mode: "cumulative-from-start"
+        //view: this.view,
+        mode: "instant"
       });
       
       this.view.ui.add(editor, "top-right")
       this.view.ui.add(timeSlider, "bottom-left")
 
-      let timeLayerView;
+      //let timeLayerView;
+      //timeLayerView = new Array();
+       
       this.view.whenLayerView(layer).then(function(layerView) {
-      timeLayerView = layerView;
-      const fullTimeExtent = layer.timeInfo.fullTimeExtent;
-      const start = fullTimeExtent.start;
 
-      // set up time slider properties based on layer timeInfo
-      timeSlider.fullTimeExtent = fullTimeExtent;
-      timeSlider.values = [start];
-      timeSlider.stops = {
-        interval: layer.timeInfo.interval
-      };
-    });
+          let timeLayerView = layerView;
+          console.log(timeLayerView);
+          const fullTimeExtent = layer.timeInfo.fullTimeExtent;
+          //const start = fullTimeExtent.start;
+          //const end = fullTimeExtent.end;
 
-    timeSlider.watch("timeExtent", function(value){
-      // update layer view filter to reflect current timeExtent
-      timeLayerView.filter = {
-        timeExtent: value
-      };
-});
-   let that = this
+          // set up time slider properties based on layer timeInfo
+          timeSlider.fullTimeExtent = fullTimeExtent;
+          timeSlider.fullTimeExtent = {
+             start: new Date(1850,8,1),
+             end: new Date(2020, 1, 1)
+           };
+          timeSlider.values = [new Date(1860, 9, 2)];
+          timeSlider.stops = {
+            interval: layer.timeInfo.interval
+          };
+      });
+    var vw = this.view;
+    
+    let that = this
     var view = this.view
     this.view.on("click", function(event) {
       view.hitTest(event).then(function(response) {
@@ -103,7 +127,34 @@ export default {
         that.empireNameSet(empireName)
       });
     });
-
+    
+    timeSlider.watch("timeExtent", function(value){
+      if (value != null) {
+          let whereStr = "startYear < "+ value.start.getTime() + " AND " + "endYear > " + value.start.getTime();
+          //whereStr = "EmpireName = A-1";
+          console.log(whereStr);
+          console.log(layerArr.length);
+          //map.removeAll();
+          for(var i = 0; i < layerArr.length; i++) {
+            //alert(i);
+            console.log("Working on: " + layerArr[i]);
+            
+            //layerArr[i].definitionExpression = whereStr;
+            //map.add(layerArr[i]);
+            //new FeatureFilter();
+             
+              vw.whenLayerView(layerArr[i]).then(function(lView) {
+                lView.filter = new FeatureFilter({
+                    where: whereStr
+                });
+              
+              });
+             
+          }
+        }
+      });
+});
+  
     });
   },
   beforeDestroy() {
