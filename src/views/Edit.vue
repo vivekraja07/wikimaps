@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <SidePanel/>
+    <SidePanel id="side"/>
     <edit-map id="map"/>
   </div>
 </template>
@@ -29,6 +29,10 @@ export default {
     }
 
     #map {
+      width: 50%;
+    }
+
+    #side {
       width: 50%;
     }
 

@@ -12,7 +12,9 @@ export default {
   
   methods: {
     ...mapActions([
-      'linkSet'
+      'linkSet',
+      'empireNameSet',
+      'informationSet'
     ]),
   },
   mounted() {
@@ -93,9 +95,12 @@ export default {
           return result.graphic.layer === featureLayer;
         })[0].graphic;
         const wiki = graphic.attributes.wikiLink;
-        console.log(wiki)
+        const information = graphic.attributes.Information;
+        const empireName = graphic.attributes.EmpireName;
         
         that.linkSet(wiki)
+        that.informationSet(information)
+        that.empireNameSet(empireName)
       });
     });
 

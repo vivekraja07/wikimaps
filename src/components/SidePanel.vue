@@ -4,55 +4,45 @@
 
         <div class = "buttons">
           <div>
-            <input type="radio" id="one" value="Map" v-model="pick" @input="blur">
-            <label for="one">Map</label>
+            <input type="radio" id="one" value="Info" v-model="pick" @input="blur">
+            <label for="one">Info</label>
           </div>
           <div>
-            <input type="radio" id="two" value="Profile" v-model="pick" @input="blur">
-            <label for="two">Profile</label>
+            <input type="radio" id="two" value="IFrame" v-model="pick" @input="blur">
+            <label for="two">Wiki</label>
           </div>
         </div>
 
       </div>
 
-      <div class="main">  
-        {{link}}
-        <iframe :src="link" title="Roman Empire" width="100%" height="100%">
-          <p>Your browser does not support iframes.</p>
-        </iframe> 
-
+    <div class="main">
         <keep-alive>
-          <component :is="pick" v-bind:events="events" v-bind:projects="projects"/>
+          <component :is="pick"/>
         </keep-alive>
-      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-// import Map from '@/components/Map.vue'
-// import Projects from '@/components/Projects.vue'
-// import Profile from '@/components/Profile.vue'
-// import Skills from '@/components/Skills.vue'
+import IFrame from '@/components/IFrame.vue'
+import Info from '@/components/Info.vue'
 
 export default {
   name: 'LeftSide',
-  computed: {
-    link() {
-      return this.$store.state.link
-    }
+  components: {
+    IFrame,
+    Info
   },
   data: function() {
     return {
-       pick: 'Profile'
-      //@TODO
-      //temporary for testing purposes:
-      //pick: 'Projects'
+       pick: 'IFrame'
     }
   },
   methods: {
     blur: function (event) {
       event.target.blur();
+      console.log(this.IFrame)
+      console.log(this.Info)
     }
   }
 }
@@ -62,7 +52,7 @@ export default {
 <style scoped>
 
 #container {
-  width: 50%;
+  width: 100%;
   height: 90%;
   display: inline-block;
   vertical-align: top;
@@ -94,12 +84,9 @@ export default {
 }
 
 .main {
-  width: 100%;
+  width: 90%;
   height: 100%;
 }
-
-
-
 
 </style>
 
