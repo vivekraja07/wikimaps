@@ -4,9 +4,19 @@
 
 <script>
 import { loadModules } from 'esri-loader';
+import { mapActions } from 'vuex'
+
 
 export default {
   name: 'edit-map',
+  
+  methods: {
+    ...mapActions([
+      'linkSet',
+      'empireNameSet',
+      'informationSet'
+    ]),
+  },
   mounted() {
     // lazy load the required ArcGIS API for JavaScript modules and CSS
     loadModules([
@@ -30,6 +40,8 @@ export default {
            title: "Details",
            content: "This is the content of the region"
          }
+          outFields: ["startYear", "endYear", "wikiLink", "EmpireName", "Information"]
+
        });
 
        var rlgLayer = new FeatureLayer({
@@ -63,7 +75,6 @@ export default {
       })
       
       this.view.ui.add(layerList, "top-left");
-
       var editor = new Editor({
         view  : this.view
       });
@@ -99,6 +110,24 @@ export default {
           };
       });
     var vw = this.view;
+    
+    let that = this
+    var view = this.view
+    this.view.on("click", function(event) {
+      view.hitTest(event).then(function(response) {
+        const graphic = response.results.filter(function(result) {
+          return result.graphic.layer === featureLayer;
+        })[0].graphic;
+        const wiki = graphic.attributes.wikiLink;
+        const information = graphic.attributes.Information;
+        const empireName = graphic.attributes.EmpireName;
+        
+        that.linkSet(wiki)
+        that.informationSet(information)
+        that.empireNameSet(empireName)
+      });
+    });
+    
     timeSlider.watch("timeExtent", function(value){
       if (value != null) {
           let whereStr = "startYear < "+ value.start.getTime() + " AND " + "endYear > " + value.start.getTime();
@@ -124,7 +153,8 @@ export default {
           }
         }
       });
-
+});
+  
     });
   },
   beforeDestroy() {

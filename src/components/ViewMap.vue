@@ -1,5 +1,9 @@
 <template>
-  <div></div>
+  <div>
+      <div id="viewDiv"></div>
+      <div id="timeSlider"></div>
+  </div>
+  
 </template>
 
 <script>
@@ -20,8 +24,17 @@ export default {
         basemap: 'topo-vector',
       });
 
+      
+
        var featureLayer = new FeatureLayer({
-         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/wikimaps/FeatureServer/0"
+         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/wikimaps/FeatureServer/0",
+         timeInfo: {
+            startField: "Time", // name of the date field
+            interval: { // specify time interval for
+            unit: "days",
+            value: 1
+            }
+         }
        });
 
        var rlgLayer = new FeatureLayer({
@@ -36,13 +49,13 @@ export default {
         map: map,
         center: [23.4162, 25.6628],
         zoom: 4
-    
       });
       var layerList = new LayerList({
         view: this.view
       })
       
       this.view.ui.add(layerList, "top-left");
+
     });
   },
   beforeDestroy() {
@@ -56,6 +69,13 @@ export default {
 </script>
 
 <style scoped>
+ /* #timeSlider {
+        position: absolute;
+        left: 100px;
+        right: 100px;
+        bottom: 30px;
+      } */
+
 div {
   padding: 0;
   margin: 0;
