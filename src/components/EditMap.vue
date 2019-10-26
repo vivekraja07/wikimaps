@@ -22,7 +22,12 @@ export default {
       });
 
        var featureLayer = new FeatureLayer({
-         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/wikimaps/FeatureServer/0"
+         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/wikimaps/FeatureServer/0",
+         popupEnabled: true,
+         popupTemplate: {
+           title: "Details",
+           content: "This is the content of the region"
+         }
        });
       
       var layer = featureLayer;
