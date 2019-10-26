@@ -14,9 +14,10 @@ export default {
       'esri/views/MapView',
       "esri/layers/FeatureLayer",
       "esri/widgets/Editor",
-      "esri/widgets/TimeSlider"
+      "esri/widgets/TimeSlider",
+      "esri/views/layers/support/FeatureFilter"
        ], { css: true })
-    .then(([ArcGISMap, MapView, FeatureLayer, Editor, TimeSlider]) => {    
+    .then(([ArcGISMap, MapView, FeatureLayer, Editor, TimeSlider, FeatureFilter]) => {    
       const map = new ArcGISMap({
         basemap: 'topo-vector',
       });
@@ -49,8 +50,8 @@ export default {
       });
 
       var timeSlider = new TimeSlider({
-        view: this.view,
-        mode: "cumulative-from-start"
+        //view: this.view,
+        mode: "instant"
       });
       
       this.view.ui.add(editor, "top-right")
@@ -58,24 +59,34 @@ export default {
 
       let timeLayerView;
       this.view.whenLayerView(layer).then(function(layerView) {
-        //layerView.layer = featureLayer;
-      timeLayerView = layerView;
-      const fullTimeExtent = layer.timeInfo.fullTimeExtent;
-      const start = fullTimeExtent.start;
 
-      // set up time slider properties based on layer timeInfo
-      timeSlider.fullTimeExtent = fullTimeExtent;
-      timeSlider.values = [start];
-      timeSlider.stops = {
-        interval: layer.timeInfo.interval
-      };
+          timeLayerView = layerView;
+          const fullTimeExtent = layer.timeInfo.fullTimeExtent;
+          //const start = fullTimeExtent.start;
+          //const end = fullTimeExtent.end;
+
+          // set up time slider properties based on layer timeInfo
+          timeSlider.fullTimeExtent = fullTimeExtent;
+          timeSlider.fullTimeExtent = {
+            start: new Date(2019,8,1),
+            end: new Date(2020, 1, 1)
+          };
+          timeSlider.values = [new Date(2019, 9, 2)];
+          timeSlider.stops = {
+            interval: layer.timeInfo.interval
+          };
     });
 
     timeSlider.watch("timeExtent", function(value){
-      // update layer view filter to reflect current timeExtent
-      timeLayerView.filter = {
-        timeExtent: value
-      };
+      if (value != null) {
+          let whereStr = "startYear < "+ value.start.getTime() + " AND " + "endYear > " + value.start.getTime();
+          
+          console.log(whereStr);
+          
+          timeLayerView.filter = new FeatureFilter({
+            where: whereStr
+          });
+      }
 });
 
     });
