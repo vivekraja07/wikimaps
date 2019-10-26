@@ -17,9 +17,8 @@ export default {
       'esri/Map',
       'esri/views/MapView',
       "esri/layers/FeatureLayer",
-      "esri/widgets/TimeSlider"
        ], { css: true })
-    .then(([ArcGISMap, MapView, FeatureLayer, TimeSlider]) => {    
+    .then(([ArcGISMap, MapView, FeatureLayer]) => {    
       const map = new ArcGISMap({
         basemap: 'topo-vector',
       });

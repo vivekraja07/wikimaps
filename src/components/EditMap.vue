@@ -13,17 +13,26 @@ export default {
       'esri/Map',
       'esri/views/MapView',
       "esri/layers/FeatureLayer",
-      "esri/widgets/Editor" 
+      "esri/widgets/Editor",
+      "esri/widgets/TimeSlider"
        ], { css: true })
-    .then(([ArcGISMap, MapView, FeatureLayer, Editor]) => {    
+    .then(([ArcGISMap, MapView, FeatureLayer, Editor, TimeSlider]) => {    
       const map = new ArcGISMap({
         basemap: 'topo-vector',
       });
 
        var featureLayer = new FeatureLayer({
-         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/wikimaps/FeatureServer/0"
+         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/wikimaps/FeatureServer/0",
+         popupEnabled: true,
+         popupTemplate: {
+           title: "Details",
+           content: "This is the content of the region"
+         }
        });
-
+      
+      var layer = featureLayer;
+       
+     
        map.add(featureLayer);
       //  map.add(graphicsLayer);
 
@@ -36,10 +45,37 @@ export default {
       });
 
       var editor = new Editor({
-        view: this.view
+        view  : this.view
+      });
+
+      var timeSlider = new TimeSlider({
+        view: this.view,
+        mode: "cumulative-from-start"
       });
       
       this.view.ui.add(editor, "top-right")
+      this.view.ui.add(timeSlider, "bottom-left")
+
+      let timeLayerView;
+      this.view.whenLayerView(layer).then(function(layerView) {
+      timeLayerView = layerView;
+      const fullTimeExtent = layer.timeInfo.fullTimeExtent;
+      const start = fullTimeExtent.start;
+
+      // set up time slider properties based on layer timeInfo
+      timeSlider.fullTimeExtent = fullTimeExtent;
+      timeSlider.values = [start];
+      timeSlider.stops = {
+        interval: layer.timeInfo.interval
+      };
+    });
+
+    timeSlider.watch("timeExtent", function(value){
+      // update layer view filter to reflect current timeExtent
+      timeLayerView.filter = {
+        timeExtent: value
+      };
+});
 
     });
   },
