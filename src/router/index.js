@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 
 import EditMap from '../components/EditMap'
 import ViewMap from '../components/ViewMap'
@@ -8,11 +7,6 @@ import ViewMap from '../components/ViewMap'
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: Home
-  },
   {
     path: '/view',
     name: 'view-Map',
@@ -22,14 +16,6 @@ const routes = [
     path: '/edit',
     name: 'edit-map',
     component: EditMap
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   }
 ]
 
