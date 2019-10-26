@@ -9,33 +9,45 @@ export default {
   name: 'web-map',
   mounted() {
     // lazy load the required ArcGIS API for JavaScript modules and CSS
-    loadModules(['esri/Map', 'esri/views/MapView', "esri/layers/Layer"], { css: true })
-    .then(([ArcGISMap, MapView, Layer]) => {
+    loadModules([
+      'esri/Map',
+      'esri/views/MapView',
+      "esri/layers/FeatureLayer",
+      "esri/layers/GraphicsLayer",
+      "esri/widgets/Sketch" 
+       ], { css: true })
+    .then(([ArcGISMap, MapView, FeatureLayer, GraphicsLayer, Sketch]) => {
+      
+      var graphicsLayer = new GraphicsLayer();
+    
       const map = new ArcGISMap({
-        basemap: 'topo-vector'
+        basemap: 'topo-vector',
+        layers: [graphicsLayer]
       });
+
+       var featureLayer = new FeatureLayer({
+         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/wikimaps/FeatureServer/0"
+       });
+
+       map.add(featureLayer);
+       map.add(graphicsLayer);
 
       this.view = new MapView({
         container: this.$el,
         map: map,
-        center: [-118, 34],
-        zoom: 8
+        center: [23.4162, 25.6628],
+        zoom: 4
     
       });
 
-      var trailheadsPortalItem = Layer.fromPortalItem({
-        portalItem: {
-          id: "45dd30b0ded249ec87b2d5751e3fc419"
-        }
+
+    
+      var sketch = new Sketch({
+        view: this.view,
+        layer: graphicsLayer
       });
 
-      function addLayer(layerItemPromise, index) {
-        return layerItemPromise.then(function(layer){
-          map.add(layer, index);
-        });
-      }
-
-      addLayer(trailheadsPortalItem, 0)
+      this.view.ui.add(sketch, "top-right")
 
     });
   },
