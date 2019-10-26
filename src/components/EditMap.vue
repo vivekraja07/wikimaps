@@ -15,9 +15,10 @@ export default {
       "esri/layers/FeatureLayer",
       "esri/widgets/Editor",
       "esri/widgets/TimeSlider",
-      "esri/views/layers/support/FeatureFilter"
+      "esri/views/layers/support/FeatureFilter",
+      "esri/widgets/LayerList"
        ], { css: true })
-    .then(([ArcGISMap, MapView, FeatureLayer, Editor, TimeSlider, FeatureFilter]) => {    
+    .then(([ArcGISMap, MapView, FeatureLayer, Editor, TimeSlider, FeatureFilter, LayerList]) => {    
       const map = new ArcGISMap({
         basemap: 'topo-vector',
       });
@@ -30,12 +31,24 @@ export default {
            content: "This is the content of the region"
          }
        });
+
+       var rlgLayer = new FeatureLayer({
+         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/religionlayer/FeatureServer",
+         popupTemplate: {
+           title: "Details",
+           content: "This is the content of the region"
+         }
+       });
       
       var layer = featureLayer;
+
+      var layerArr = new Array();
+      layerArr.push(featureLayer);
+      layerArr.push(rlgLayer);
        
      
        map.add(featureLayer);
-      //  map.add(graphicsLayer);
+       map.add(rlgLayer);
 
       this.view = new MapView({
         container: this.$el,
@@ -44,6 +57,12 @@ export default {
         zoom: 4
     
       });
+
+       var layerList = new LayerList({
+        view: this.view
+      })
+      
+      this.view.ui.add(layerList, "top-left");
 
       var editor = new Editor({
         view  : this.view
@@ -57,10 +76,13 @@ export default {
       this.view.ui.add(editor, "top-right")
       this.view.ui.add(timeSlider, "bottom-left")
 
-      let timeLayerView;
+      //let timeLayerView;
+      //timeLayerView = new Array();
+       
       this.view.whenLayerView(layer).then(function(layerView) {
 
-          timeLayerView = layerView;
+          let timeLayerView = layerView;
+          console.log(timeLayerView);
           const fullTimeExtent = layer.timeInfo.fullTimeExtent;
           //const start = fullTimeExtent.start;
           //const end = fullTimeExtent.end;
@@ -68,26 +90,40 @@ export default {
           // set up time slider properties based on layer timeInfo
           timeSlider.fullTimeExtent = fullTimeExtent;
           timeSlider.fullTimeExtent = {
-            start: new Date(2019,8,1),
-            end: new Date(2020, 1, 1)
-          };
-          timeSlider.values = [new Date(2019, 9, 2)];
+             start: new Date(1850,8,1),
+             end: new Date(2020, 1, 1)
+           };
+          timeSlider.values = [new Date(1860, 9, 2)];
           timeSlider.stops = {
             interval: layer.timeInfo.interval
           };
-    });
-
+      });
+    var vw = this.view;
     timeSlider.watch("timeExtent", function(value){
       if (value != null) {
           let whereStr = "startYear < "+ value.start.getTime() + " AND " + "endYear > " + value.start.getTime();
-          
+          //whereStr = "EmpireName = A-1";
           console.log(whereStr);
-          
-          timeLayerView.filter = new FeatureFilter({
-            where: whereStr
-          });
-      }
-});
+          console.log(layerArr.length);
+          //map.removeAll();
+          for(var i = 0; i < layerArr.length; i++) {
+            //alert(i);
+            console.log("Working on: " + layerArr[i]);
+            
+            //layerArr[i].definitionExpression = whereStr;
+            //map.add(layerArr[i]);
+            //new FeatureFilter();
+             
+              vw.whenLayerView(layerArr[i]).then(function(lView) {
+                lView.filter = new FeatureFilter({
+                    where: whereStr
+                });
+              
+              });
+             
+          }
+        }
+      });
 
     });
   },

@@ -13,8 +13,9 @@ export default {
       'esri/Map',
       'esri/views/MapView',
       "esri/layers/FeatureLayer",
+      "esri/widgets/LayerList"
        ], { css: true })
-    .then(([ArcGISMap, MapView, FeatureLayer]) => {    
+    .then(([ArcGISMap, MapView, FeatureLayer, LayerList]) => {    
       const map = new ArcGISMap({
         basemap: 'topo-vector',
       });
@@ -23,7 +24,12 @@ export default {
          url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/wikimaps/FeatureServer/0"
        });
 
+       var rlgLayer = new FeatureLayer({
+         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/religionlayer/FeatureServer"
+       });
+
        map.add(featureLayer);
+       map.add(rlgLayer);
 
       this.view = new MapView({
         container: this.$el,
@@ -32,7 +38,11 @@ export default {
         zoom: 4
     
       });
+      var layerList = new LayerList({
+        view: this.view
+      })
       
+      this.view.ui.add(layerList, "top-left");
     });
   },
   beforeDestroy() {
