@@ -1,15 +1,19 @@
 <template>
     <div id="app">
-        <web-map />
+         <div id="nav">
+      <!-- <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link> -->
+    </div>
+    <router-view/>
     </div>
 </template>
 
 <script>
-import WebMap from './components/WebMap.vue';
+// import WebMap from './components/WebMap.vue';
 
 export default {
     name: 'App',
-    components: { WebMap }
+    // components: { WebMap }
 };
 </script>
 

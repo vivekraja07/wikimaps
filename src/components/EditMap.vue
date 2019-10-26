@@ -6,23 +6,18 @@
 import { loadModules } from 'esri-loader';
 
 export default {
-  name: 'web-map',
+  name: 'edit-map',
   mounted() {
     // lazy load the required ArcGIS API for JavaScript modules and CSS
     loadModules([
       'esri/Map',
       'esri/views/MapView',
       "esri/layers/FeatureLayer",
-      "esri/layers/GraphicsLayer",
-      "esri/widgets/Sketch" 
+      "esri/widgets/Editor" 
        ], { css: true })
-    .then(([ArcGISMap, MapView, FeatureLayer, GraphicsLayer, Sketch]) => {
-      
-      var graphicsLayer = new GraphicsLayer();
-    
+    .then(([ArcGISMap, MapView, FeatureLayer, Editor]) => {    
       const map = new ArcGISMap({
         basemap: 'topo-vector',
-        layers: [graphicsLayer]
       });
 
        var featureLayer = new FeatureLayer({
@@ -30,7 +25,7 @@ export default {
        });
 
        map.add(featureLayer);
-       map.add(graphicsLayer);
+      //  map.add(graphicsLayer);
 
       this.view = new MapView({
         container: this.$el,
@@ -40,14 +35,11 @@ export default {
     
       });
 
-
-    
-      var sketch = new Sketch({
-        view: this.view,
-        layer: graphicsLayer
+      var editor = new Editor({
+        view: this.view
       });
-
-      this.view.ui.add(sketch, "top-right")
+      
+      this.view.ui.add(editor, "top-right")
 
     });
   },
