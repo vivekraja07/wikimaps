@@ -13,7 +13,7 @@ export default {
   computed: {
     link() {
      console.log(this.$store.state.link)
-      return this.$store.state.link
+      return this.$store.state.link + '?printable=yes'
     },
     empireName() {
       return this.$store.state.empireName
