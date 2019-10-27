@@ -53,28 +53,28 @@ export default {
           value: "1",
           symbol: {
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-            color: "blue"
+            color: [51, 204, 51, 0.45]
           }
         }, {
           // All features with value of "East" will be green
           value: "2",
           symbol: {
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-            color: "green"
+            color: [0, 0, 0, 0.45]
           }
         }, {
           // All features with value of "South" will be red
           value: "3",
           symbol: {
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-            color: "red"
+            color: [0,100,255,0.45]	
           }
         }, {
           // All features with value of "West" will be yellow
           value: "4",
           symbol: {
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-            color: "yellow"
+            color: [255,0,0,0.45]	
           }
         },
         {
@@ -82,7 +82,7 @@ export default {
           value: "5",
           symbol: {
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-            color: "black"
+            color: [51,0,255,0.45]	
           }
         },
         {
@@ -90,7 +90,7 @@ export default {
           value: "6",
           symbol: {
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-            color: "white"
+            color: [238, 118, 33,0.45]	
           }
         },
         {
@@ -98,7 +98,7 @@ export default {
           value: "7",
           symbol: {
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-            color: "pink"
+            color: [205, 198, 115, 0.45]
           }
         },
         {
@@ -106,7 +106,7 @@ export default {
           value: "8",
           symbol: {
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-            color: "purple"
+            color: [79, 47, 79, 0.45]
           }
         },
         {
@@ -114,7 +114,7 @@ export default {
           value: "9",
           symbol: {
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-            color: "silver"
+            color: [153, 24, 44, 0.45]
           }
         },
         {
@@ -122,7 +122,7 @@ export default {
           value: "10",
           symbol: {
             type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-            color: "orange"
+            color: [0, 178, 238, 0.45]
           }
         }
         ]
@@ -130,10 +130,10 @@ export default {
 
        var featureLayer = new FeatureLayer({
          url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/wikimaps/FeatureServer/0",
-         popupEnabled: true,
+         popupEnabled: false,
          popupTemplate: {
-           title: "Details",
-           content: "This is the content of the region"
+           title: "{EmpireName} Region",
+           content: "This is the {EmpireName} region"
          },
           outFields: ["startYear", "endYear", "wikiLink", "EmpireName", "Information"],
           renderer: renderer
@@ -141,11 +141,21 @@ export default {
 
        var rlgLayer = new FeatureLayer({
          url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/religionlayer/FeatureServer",
-         popupTemplate: {
-           title: "Details",
-           content: "This is the content of the region"
-         }
+         
        });
+
+       var newLayer1 = new FeatureLayer({
+         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/custom_layer/FeatureServer",
+       });
+
+       var newLayer2 = new FeatureLayer({
+         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/custom_layer_1/FeatureServer",
+       });
+
+      var newLayer3 = new FeatureLayer({
+         url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/custom_layer1/FeatureServer",
+       });
+
       
       var layer = featureLayer;
 
@@ -156,6 +166,27 @@ export default {
      
        map.add(featureLayer);
        map.add(rlgLayer);
+
+      document.getElementById("myButton").onclick = doSomething;  
+
+      var count = 0
+
+      function doSomething() {
+        alert("New Feature Layer added");
+        
+        if (count == 0) {
+          map.add(newLayer1);
+          count = count + 1;
+        } else if (count == 1) {
+          count = count + 1
+          map.add(newLayer2)
+        } else {
+          count = count + 1
+          map.add(newLayer3)
+        }
+        
+
+      }
 
       this.view = new MapView({
         container: this.$el,
@@ -201,7 +232,7 @@ export default {
           timeSlider.fullTimeExtent = fullTimeExtent;
           timeSlider.fullTimeExtent = {
              start: new Date(500,8,1),
-             end: new Date(1200, 1, 1)
+             end: new Date(2020, 1, 1)
            };
           timeSlider.values = [new Date(1860, 9, 2)];
           timeSlider.stops = {
@@ -284,4 +315,6 @@ div {
   width: 100%;
   height: 100%;
 }
+
+
 </style>

@@ -30,4 +30,8 @@ html,body {
   width: 100%;
   height: 100%;
 }
+
+.esri-ui-bottom-left,.esri-time-slider {
+  width: 100%;
+}
 </style>
