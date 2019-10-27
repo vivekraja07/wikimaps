@@ -8,7 +8,7 @@ export default new Vuex.Store({
     link: 'https://en.wikipedia.org/wiki/Roman_Empire',
     empireName: 'Roman Empire',
     information: 'One of the largest empires that consisted largely of a disciplined full-time army centered around the Rome Region of Italy'
-  },
+    },
   mutations: {
     setLink (state, event) {
       state.link = event

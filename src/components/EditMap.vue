@@ -15,7 +15,7 @@ export default {
       'linkSet',
       'empireNameSet',
       'informationSet'
-    ]),
+    ])
   },
   mounted() {
     // lazy load the required ArcGIS API for JavaScript modules and CSS
@@ -26,9 +26,10 @@ export default {
       "esri/widgets/Editor",
       "esri/widgets/TimeSlider",
       "esri/views/layers/support/FeatureFilter",
-      "esri/widgets/LayerList"
+      "esri/widgets/LayerList",
+      "esri/widgets/Expand"
        ], { css: true })
-    .then(([ArcGISMap, MapView, FeatureLayer, Editor, TimeSlider, FeatureFilter, LayerList]) => {    
+    .then(([ArcGISMap, MapView, FeatureLayer, Editor, TimeSlider, FeatureFilter, LayerList, Expand]) => {    
       const map = new ArcGISMap({
         basemap: 'topo-vector',
       });
@@ -39,8 +40,8 @@ export default {
          popupTemplate: {
            title: "Details",
            content: "This is the content of the region"
-         }
-          outFields: ["startYear", "endYear", "wikiLink", "EmpireName", "Information"]
+         },
+          outFields: ["startYear", "endYear", "wikiLink", "EmpireName", "Information", ]
 
        });
 
@@ -69,22 +70,30 @@ export default {
         zoom: 4
     
       });
-
-       var layerList = new LayerList({
-        view: this.view
-      })
       
-      this.view.ui.add(layerList, "top-left");
+
       var editor = new Editor({
+        container: document.createElement("div"),
         view  : this.view
       });
 
-      var timeSlider = new TimeSlider({
+      
+      // this.view.ui.add(editor, "top-right")
+
+
+      var editorExpand = new Expand({
+        expandIconClass: "esri-icon-edit",  // see https://developers.arcgis.com/javascript/latest/guide/esri-icon-font/
+        view: this.view,
+        content: editor.domNode
+      });
+      
+      this.view.ui.add(editorExpand, "top-right");
+
+            var timeSlider = new TimeSlider({
         //view: this.view,
         mode: "instant"
       });
-      
-      this.view.ui.add(editor, "top-right")
+
       this.view.ui.add(timeSlider, "bottom-left")
 
       //let timeLayerView;
@@ -101,8 +110,8 @@ export default {
           // set up time slider properties based on layer timeInfo
           timeSlider.fullTimeExtent = fullTimeExtent;
           timeSlider.fullTimeExtent = {
-             start: new Date(1850,8,1),
-             end: new Date(2020, 1, 1)
+             start: new Date(500,8,1),
+             end: new Date(1200, 1, 1)
            };
           timeSlider.values = [new Date(1860, 9, 2)];
           timeSlider.stops = {
@@ -127,6 +136,17 @@ export default {
         that.empireNameSet(empireName)
       });
     });
+
+    window.addEventListener("load", function(event) {
+    // here is the Vue code
+    var layerList = new LayerList({
+      view: that.view,
+      container: document.getElementById("featureLayers")
+    })
+    console.log(layerList)
+    console.log(event)
+  });
+    
     
     timeSlider.watch("timeExtent", function(value){
       if (value != null) {
@@ -153,8 +173,8 @@ export default {
           }
         }
       });
-});
-  
+
+
     });
   },
   beforeDestroy() {

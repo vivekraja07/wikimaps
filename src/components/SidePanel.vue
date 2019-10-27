@@ -11,6 +11,10 @@
             <input type="radio" id="two" value="IFrame" v-model="pick" @input="blur">
             <label for="two">Wiki</label>
           </div>
+          <div>
+            <input type="radio" id="three" value="FeatureLayer" v-model="pick" @input="blur">
+            <label for="three">Map-Type</label>
+          </div>
         </div>
 
       </div>
@@ -26,16 +30,18 @@
 <script>
 import IFrame from '@/components/IFrame.vue'
 import Info from '@/components/Info.vue'
+import FeatureLayer from '@/components/FeatureLayer.vue'
 
 export default {
   name: 'LeftSide',
   components: {
     IFrame,
-    Info
+    Info,
+    FeatureLayer
   },
   data: function() {
     return {
-       pick: 'IFrame'
+       pick: 'FeatureLayer'
     }
   },
   methods: {
@@ -43,6 +49,7 @@ export default {
       event.target.blur();
       console.log(this.IFrame)
       console.log(this.Info)
+      console.log(this.FeatureLayer)
     }
   }
 }

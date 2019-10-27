@@ -29,11 +29,11 @@ export default {
     }
 
     #map {
-      width: 50%;
+      width: 55%;
     }
 
     #side {
-      width: 50%;
+      width: 45%;
     }
 
     * {box-sizing:border-box}
