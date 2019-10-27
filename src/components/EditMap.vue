@@ -232,7 +232,8 @@ export default {
           timeSlider.fullTimeExtent = fullTimeExtent;
           timeSlider.fullTimeExtent = {
              start: new Date(500,8,1),
-             end: new Date(2020, 1, 1)
+            //  end: new Date(2020, 1, 1),
+            end: new Date()
            };
           timeSlider.values = [new Date(1860, 9, 2)];
           timeSlider.stops = {
