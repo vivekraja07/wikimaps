@@ -1,31 +1,90 @@
-<template>
-    <div id="app">
-        <web-map />
-    </div>
-</template>
-
-<script>
-import WebMap from './components/WebMap.vue';
-
-export default {
-    name: 'App',
-    components: { WebMap }
-};
-</script>
-
-<style>
-html,body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-}
-#app {
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-}
-</style>
+        type: "unique-value",  // autocasts as new UniqueValueRenderer()
+        // field: "OBJECTID",
+        valueExpression: "When($feature.OBJECTID % 10 == 0, '1', " +
+         "$feature.OBJECTID % 10 == 1, '2'," +
+         "$feature.OBJECTID % 10 == 2, '3'," + 
+        //  "$feature.OBJECTID % 10 == 3, '4'," +
+        //  "$feature.OBJECTID % 10 == 4, '5'," +
+        //   "$feature.OBJECTID % 10 == 5, '6'," +
+        //    "$feature.OBJECTID % 10 == 6, '7'," +
+        //     "$feature.OBJECTID % 10 == 7, '8'," +
+        //      "$feature.OBJECTID % 10 == 8, '9'," +
+         + "'10)",
+        defaultSymbol: { type: "simple-fill" },  // autocasts as new SimpleFillSymbol()
+        uniqueValueInfos: [{
+          // All features with value of "North" will be blue
+          value: "1",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "blue"
+          }
+        }, {
+          // All features with value of "East" will be green
+          value: "2",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "green"
+          }
+        }, {
+          // All features with value of "South" will be red
+          value: "3",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "red"
+          }
+        }, {
+          // All features with value of "West" will be yellow
+          value: "4",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "yellow"
+          },
+        },
+          // {
+          // // All features with value of "West" will be yellow
+          // value: "5",
+          // symbol: {
+          //   type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+          //   color: "orange"
+          // }
+          // },
+          // {
+          // // All features with value of "West" will be yellow
+          // value: "6",
+          // symbol: {
+          //   type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+          //   color: "pink"
+          // }
+          // },
+          // {
+          // // All features with value of "West" will be yellow
+          // value: "7",
+          // symbol: {
+          //   type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+          //   color: "purple"
+          // }
+          // },
+          // {
+          // // All features with value of "West" will be yellow
+          // value: "8",
+          // symbol: {
+          //   type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+          //   color: "black"
+          // }
+          // },
+          // {
+          // // All features with value of "West" will be yellow
+          // value: "9",
+          // symbol: {
+          //   type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+          //   color: "white"
+          // }
+          // },
+          {
+          // All features with value of "West" will be yellow
+          value: "10",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "brown"
+          }
+        }]

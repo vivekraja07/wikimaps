@@ -27,12 +27,106 @@ export default {
       "esri/widgets/TimeSlider",
       "esri/views/layers/support/FeatureFilter",
       "esri/widgets/LayerList",
-      "esri/widgets/Expand"
+      "esri/widgets/Expand",
        ], { css: true })
     .then(([ArcGISMap, MapView, FeatureLayer, Editor, TimeSlider, FeatureFilter, LayerList, Expand]) => {    
       const map = new ArcGISMap({
         basemap: 'topo-vector',
       });
+
+      var renderer = {
+        type: "unique-value",  // autocasts as new UniqueValueRenderer()
+        // field: "OBJECTID",
+        valueExpression: "When($feature.OBJECTID % 10 == 0, '1', " +
+        "$feature.OBJECTID % 10 == 1, '2', " +
+        "$feature.OBJECTID % 10 == 2, '3', " +
+        "$feature.OBJECTID % 10 == 3, '4', " +
+        "$feature.OBJECTID % 10 == 4, '5', " +
+        "$feature.OBJECTID % 10 == 5, '6', " +
+        "$feature.OBJECTID % 10 == 6, '7', " +
+        "$feature.OBJECTID % 10 == 7, '8', " +
+        "$feature.OBJECTID % 10 == 8, '9', " +
+        "'10')",
+        defaultSymbol: { type: "simple-fill" },  // autocasts as new SimpleFillSymbol()
+        uniqueValueInfos: [{
+          // All features with value of "North" will be blue
+          value: "1",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "blue"
+          }
+        }, {
+          // All features with value of "East" will be green
+          value: "2",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "green"
+          }
+        }, {
+          // All features with value of "South" will be red
+          value: "3",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "red"
+          }
+        }, {
+          // All features with value of "West" will be yellow
+          value: "4",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "yellow"
+          }
+        },
+        {
+          // All features with value of "West" will be yellow
+          value: "5",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "black"
+          }
+        },
+        {
+          // All features with value of "West" will be yellow
+          value: "6",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "white"
+          }
+        },
+        {
+          // All features with value of "West" will be yellow
+          value: "7",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "pink"
+          }
+        },
+        {
+          // All features with value of "West" will be yellow
+          value: "8",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "purple"
+          }
+        },
+        {
+          // All features with value of "West" will be yellow
+          value: "9",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "silver"
+          }
+        },
+        {
+          // All features with value of "West" will be yellow
+          value: "10",
+          symbol: {
+            type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+            color: "orange"
+          }
+        }
+        ]
+      };
 
        var featureLayer = new FeatureLayer({
          url: "https://services5.arcgis.com/rQJwj1ctcaOp5BYz/arcgis/rest/services/wikimaps/FeatureServer/0",
@@ -41,8 +135,8 @@ export default {
            title: "Details",
            content: "This is the content of the region"
          },
-          outFields: ["startYear", "endYear", "wikiLink", "EmpireName", "Information", ]
-
+          outFields: ["startYear", "endYear", "wikiLink", "EmpireName", "Information"],
+          renderer: renderer
        });
 
        var rlgLayer = new FeatureLayer({
@@ -67,7 +161,7 @@ export default {
         container: this.$el,
         map: map,
         center: [23.4162, 25.6628],
-        zoom: 4
+        zoom: 2
     
       });
       
