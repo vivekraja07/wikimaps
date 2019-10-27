@@ -74,12 +74,8 @@ export default {
 
       var editor = new Editor({
         container: document.createElement("div"),
-        view  : this.view
+        view: this.view
       });
-
-      
-      // this.view.ui.add(editor, "top-right")
-
 
       var editorExpand = new Expand({
         expandIconClass: "esri-icon-edit",  // see https://developers.arcgis.com/javascript/latest/guide/esri-icon-font/
